@@ -14,10 +14,10 @@ class Obs(Block):
         self.change_x = 0
     
     def generate(self):
-        self.canon = random.randint(0,8)
-        self.rect.y = (self.canon*50) + 17
-        self.change_x = random.randint (1,2)
+            self.rect.y = (random.randint(0,8)*50) + 17
+            self.change_x = random.randint (1,2)
             
     
     def update(self):
         self.rect.x += self.change_x
+    
