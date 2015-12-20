@@ -22,7 +22,7 @@ CFUNDO = WHITE
 CBALL = LBLUE
 
 
-VEL = 4
+VEL = 3
 NULL = 0
 Height1 = 75
 Height2 = 60
