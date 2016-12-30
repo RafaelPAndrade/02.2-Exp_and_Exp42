@@ -22,7 +22,7 @@ CFUNDO = WHITE
 CBALL = LBLUE
 
 
-VEL = 3
+VEL = 4
 NULL = 0
 Height1 = 75
 Height2 = 60
@@ -33,3 +33,6 @@ FPS = 120
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 450
+
+
+

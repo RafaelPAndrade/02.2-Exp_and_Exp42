@@ -1,4 +1,5 @@
 #coding: latin-1
+
 #obj
 
 import pygame

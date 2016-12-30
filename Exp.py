@@ -1,10 +1,23 @@
-#coding: latin-1
+#coding: utf-8
 
 import pygame
 import constants
 from block import Block
 from Obj import Obj
 from Obs import Obs
+
+
+#-----Writes text, using 5 arguments: position of center x, position of center y, size, color(RGB), wording
+def words(x, y, size, color, string):
+    font = pygame.font.Font(None, size)
+    text = font.render(string, 1, color) #color may refer to the constants.py file
+    textpos = text.get_rect()
+    textpos.centerx = x
+    textpos.centery = y
+    screen.blit(text, textpos)
+    
+    return True
+
 
 
 pygame.init()
@@ -42,7 +55,8 @@ pause = False
 
 miss = 0
 lifes = 3
-point = 0
+ate = 0
+deco_count=0
 deco = Obs(0,0,constants.WHITE)
 Snack = Obs(0,0,constants.WHITE)
 Snackcount = 0
@@ -56,7 +70,7 @@ while not done:
 			player.kill()
 			player = Obj((constants.SCREEN_WIDTH/2-(constants.Height1/2)),(constants.SCREEN_HEIGHT*4/6-(constants.Height1/2)),constants.Height1,constants.Height1, constants.BLACK)
 			drawables_list.add(player)
-			animated_list.add(player)		
+			animated_list.add(player)
 			Player = True
 		lifes = 3 - miss
 		if lifes <= 0:
@@ -105,17 +119,19 @@ while not done:
 	
 				elif event.key == pygame.K_RIGHT:
 					player.move_right()
-	
+				
+				elif event.key == pygame.K_a:
+					player.kill()	
 				elif event.key == pygame.K_g:
 					player.image.fill(constants.GREEN)
 					Snack.image.fill(constants.GREENISH)
 					if Intro == True:
 						if Snack.rect.x>= player.rect.x and Snack.rect.x<= player.rect.x + constants.Height1 - constants.ObsSize and Snack.rect.y >= player.rect.y and Snack.rect.y <= player.rect.y + constants.Height1 - constants.ObsSize:
-							point += 1
+							ate += 1
 							Snack.kill()
 							bullet = False
 						else:
-							point -= 1
+							True
 		
 		elif event.type == pygame.KEYUP:
 			if event.key == pygame.K_y:
@@ -151,28 +167,23 @@ while not done:
 		player.rect.y = constants.SCREEN_HEIGHT-constants.Height1
 	
 		
-		
-	if point <= 0:
-		point = 0
-#-----------------------------Desenhos------------------------------------------
+#-----------------------------Desenhos(não pôr nada gráfico antes, will be erased)------------------------------------------
 	if pause == False:
 		animated_list.update()	
 			
 	screen.fill(constants.WHITE)
 
 	drawables_list.draw(screen)
-	
+	words(player.rect.x+(constants.Height1/2), player.rect.y+(constants.Height1/2), 40, constants.RED, str(lifes))
 
 #-------------------------------Introdução--------------------------------------
 	if Intro == False:
 		Snack.kill()		
 		
-		font = pygame.font.Font(None, 45)
-		text = font.render("Press [G] to continue", 1, constants.BLACK)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH/2
-		textpos.centery = constants.SCREEN_HEIGHT*6/7
-		screen.blit(text, textpos)	
+		
+		words(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT*6/7, 45, constants.BLACK, "Press [G] to continue")
+		
+	    
 					
 					
 		for event in pygame.event.get():
@@ -188,74 +199,49 @@ while not done:
 		deco_list=[]
 		for i in range(1201):
 			if i%600 == 0: 
-				deco = Obs(70,70,constants.MAGENTA)
-				drawables_list.add(deco)
-				animated_list.add(deco)
-				deco.generate()
-				deco_list.append(deco)
-				#deco_count += 1
+			    deco = Obs(70,70,constants.MAGENTA)
+			    drawables_list.add(deco)
+			    animated_list.add(deco)
+			    #deco.generate()
+			    deco_list.append(deco)
+			    deco_count += 1
+			    print(len(deco_list))
 				
 #--------------------------------Instruções------------------------------------
-	if Intro == True and Ready == False:	
-		#for d in range(0,deco_count-1):
-			#deco_list[d].rect.x = 0
-			#deco_list[d].change_x = 0
-		font = pygame.font.Font(None, 60)
-		text = font.render("Keys:Arrows to move, [G] to catch the targets, [Y] to pause", 1, constants.BLACK)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH/2
-		textpos.centery = constants.SCREEN_HEIGHT*2/6
-		screen.blit(text, textpos)		
-	
-		font = pygame.font.Font(None, 60)
-		text = font.render("Don't let the targets hit the light blue bar", 1, constants.BLACK)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH/2
-		textpos.centery = constants.SCREEN_HEIGHT*3/6
-		screen.blit(text, textpos)	
+	if Intro == True and Ready == False:
+	    print(str(deco_count))		
+	    
 		
-		font = pygame.font.Font(None, 45)
-		text = font.render("Press [G] to continue", 1, constants.BLACK)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH/2
-		textpos.centery = constants.SCREEN_HEIGHT*5/6
-		screen.blit(text, textpos)	
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				done = True		
-			elif event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_g:
-					Ready = True			
+		
+	    words(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT*2/6, 60, constants.BLACK, "Keys:Arrows to move, [G] to catch the targets, [Y] to pause")
+		
+		
+	    words(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT*3/6, 60, constants.BLACK, "Don't let the targets hit the light blue bar")
+		
+	    words(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT*6/7, 45, constants.BLACK, "Press [G] to continue")
+		
+		
+		
+	    for event in pygame.event.get():
+	        if event.type == pygame.QUIT:
+		    done = True		
+		elif event.type == pygame.KEYDOWN:
+		    if event.key == pygame.K_g:
+			Ready = True			
 	
 	
 	
 		
 #---------------------------Jogo--------------------------------------------------
 	if Intro == True and Ready == True:
-		font = pygame.font.Font(None, 30)
-		text = font.render(str(point), 1, constants.WHITE)
-		textpos = text.get_rect()
-		textpos.centerx = 35
-		textpos.centery = 15
-		screen.blit(text, textpos)	
+		words(35, 15, 30, constants.WHITE, str(ate))
 	
 	
 	if Gameover == False:
-		font = pygame.font.Font(None, 30)
-		text = font.render(str(lifes), 1, constants.WHITE)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH -35
-		textpos.centery = 15
-		screen.blit(text, textpos)
+		words(constants.SCREEN_WIDTH -35, 15, 30, constants.WHITE, str(lifes))
 		
-	if pause == True:
-		font = pygame.font.Font(None, 150)
-		text = font.render("GET     READY", 1, constants.BLACK)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH/2
-		textpos.centery = constants.SCREEN_HEIGHT/2
-		screen.blit(text, textpos)				
-		font = pygame.font.Font(None, 45)
+	if pause == True:		
+		words(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, 150, constants.BLACK, "GET     READY")
 		
 		
 	
@@ -272,20 +258,11 @@ while not done:
 		
 		Snack.kill()
 		player.kill()
-		font = pygame.font.Font(None, 150)
-		text = font.render("GAME     OVER", 1, constants.BLACK)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH/2
-		textpos.centery = constants.SCREEN_HEIGHT/2
-		screen.blit(text, textpos)				
-		font = pygame.font.Font(None, 45)
 
+		words(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2, 150, constants.BLACK, "GAME     OVER")
 		
-		text = font.render("Press [G] to restart, [V] for Intro and [B] to quit", 1, constants.BLACK)
-		textpos = text.get_rect()
-		textpos.centerx = constants.SCREEN_WIDTH/2
-		textpos.centery = constants.SCREEN_HEIGHT*5/6
-		screen.blit(text, textpos)	
+		words(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT*5/6, 45, constants.BLACK, "Press [G] to restart, [V] for Intro and [B] to quit")
+		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				done = True		
@@ -296,7 +273,7 @@ while not done:
 					Player = False
 					bullet = False
 					Snackcount = 0
-					point = 0
+					ate = 0
 					miss = 0					
 				elif event.key == pygame.K_v:
 					Intro = False
@@ -305,7 +282,7 @@ while not done:
 					Player = False
 					bullet = False
 					Snackcount = 0
-					point = 0
+					ate = 0
 					miss = 0
 					
 					
